@@ -6,7 +6,12 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import App from 'next/app'
 import '../styles.css'
 import theme from '../src/theme'
-import Layout from '../layouts/default'
+import dynamic from 'next/dynamic'
+
+const Layout = dynamic(
+  () => import('../layouts/default'),
+  { ssr: false }
+)
 
 function MyApp(props) {
   const { Component, pageProps } = props;

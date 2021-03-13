@@ -79,10 +79,4 @@ function Chapter() {
   );
 }
 
-export function getServerSideProps (context) {
-  return {
-    props: { params: context.params }
-  }
-}
-
 export default Chapter
