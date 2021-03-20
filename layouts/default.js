@@ -126,6 +126,8 @@ function Default ({ children }) {
       <Container maxWidth="md" className={classes.root}>
         {children}
       </Container>
+      <Container style={{ minHeight: 50 }} className={classes.root}>
+      </Container>
     </React.Fragment>
   )
 }

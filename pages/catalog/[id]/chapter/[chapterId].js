@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs'
 import Link from '@material-ui/core/Link'
 import { useRouter } from 'next/router'
+import Button from '@material-ui/core/Button'
+import Alert from '@material-ui/lab/Alert'
 
 function Chapter() {
   const router = useRouter()
@@ -14,6 +16,7 @@ function Chapter() {
   const [chapter, setChapter] = useState({})
   const [pages, setPages] = useState([])
   const [loading, setLoading] = useState(true)
+  const [chapterloading, setChapterLoading] = useState(true)
 
   useEffect(() => {
     async function fetchCatalog() {
@@ -25,8 +28,10 @@ function Chapter() {
 
   useEffect(() => {
     async function fetchChapter() {
+      setChapterLoading(true)
       const ret = await axios(`${process.env.apiHost}/catalog/${id}/chapter/${chapterId}`)
       setChapter(ret.data)
+      setChapterLoading(false)
     }
     fetchChapter()
   }, [chapterId])
@@ -64,7 +69,7 @@ function Chapter() {
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto' }}>
-      {chapter?.prev && (
+      {chapterloading || (
         <Breadcrumbs style={{ marginBottom: 32 }} aria-label="breadcrumb">
           {chapter?.prev && <Link color="inherit" href={prevUrl} onClick={handlePrev}>上一話({chapter?.prev?.title})</Link>}
           <Link color="inherit" href={baseUrl} onClick={handleBack}>
@@ -75,6 +80,13 @@ function Chapter() {
         </Breadcrumbs>
       )}
       {pageNodes}
+      {loading || (
+        chapter?.next ? (
+          <Button color="primary" onClick={handleNext} style={{ width: '100%', minHeight: 42, marginTop: 16 }} variant="outlined">下一話</Button>
+        ) : (
+          <Alert variant="outlined" icon={false} style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }} severity="info">已是最新章節</Alert>
+        )
+      )}
     </div>
   );
 }
