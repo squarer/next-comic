@@ -4,12 +4,9 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import Hidden from '@material-ui/core/Hidden'
 import Button from '@material-ui/core/Button'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
-import Link from '../src/Link'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -17,10 +14,12 @@ import RestoreIcon from '@material-ui/icons/Restore'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import Popover from '@material-ui/core/Popover'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import SearchBox from '../components/search-box'
 
 const useStyles = makeStyles(theme => ({
   root: {
     padding: 16,
+    marginTop: 16,
   },
   button: {
     minWidth: 42,
@@ -124,7 +123,12 @@ function Default ({ children }) {
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" className={classes.root}>
-        {children}
+        <Box display="flex" justifyContent="center" mb={4}>
+          <SearchBox />
+        </Box>
+        <Box mb={2}>
+          {children}
+        </Box>
       </Container>
       <Container style={{ minHeight: 50 }} className={classes.root}>
       </Container>

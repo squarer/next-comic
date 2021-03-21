@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles(theme => ({
   grid: {
     padding: '20px!important',
-    '@media (max-width: 500px)' : {
+    '@media (max-width: 500px)': {
       padding: '12px!important'
     }
   },
@@ -26,6 +26,7 @@ function Index() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const category = typeof location !== 'undefined' && new URLSearchParams(location.search).get('category')
+  const title = typeof location !== 'undefined' && new URLSearchParams(location.search).get('title')
 
   useEffect(() => {
     async function fetch () {
@@ -35,7 +36,7 @@ function Index() {
       setLoading(false)
     }
     fetch()
-  }, [category])
+  }, [category, title])
 
   const catalogNodes = (loading ? Array.from(new Array(10)) : catalogs).slice(0, 30).map((v, i) => (
     <Grid className={classes.grid} key={i} item md={3} sm={4} xs={6}>
