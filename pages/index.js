@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Catalog from '../components/catalog'
 import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { useRouter } from 'next/router'
@@ -14,31 +15,53 @@ const useStyles = makeStyles(theme => ({
       padding: '12px!important'
     }
   },
+  loadMore: {
+    height: 48,
+  }
 }))
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+const PER_PAGE = 30
+
 function Index() {
   const classes = useStyles()
   const [catalogs, setCatalogs] = useState([])
+  const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [skip, setSkip] = useState(PER_PAGE)
+  const [moreLoading, setMoreLoading] = useState(false)
   const router = useRouter()
-  const category = typeof location !== 'undefined' && new URLSearchParams(location.search).get('category')
-  const title = typeof location !== 'undefined' && new URLSearchParams(location.search).get('title')
+  const params = new URLSearchParams(location.search)
+  const category = params.get('category')
+  const title = params.get('title')
+  params.set('limit', PER_PAGE + 1)
+
+  const loadMore = async () => {
+    setMoreLoading(true)
+    params.set('skip', skip)
+    const ret = await axios(`${process.env.apiHost}/catalog?${params.toString()}`)
+    setCatalogs(catalogs.concat(ret.data.slice(0, 30)))
+    setSkip(skip + PER_PAGE)
+    setCount(ret.data.length)
+    setMoreLoading(false)
+  }
 
   useEffect(() => {
-    async function fetch () {
+    async function fetch() {
       setLoading(true)
-      const ret = await axios(`${process.env.apiHost}/catalog${location.search}`)
-      setCatalogs(ret.data || [])
+      const ret = await axios(`${process.env.apiHost}/catalog?${params.toString()}`)
+      setCatalogs(ret.data.slice(0, 30))
+      setSkip(PER_PAGE)
+      setCount(ret.data.length)
       setLoading(false)
     }
     fetch()
   }, [category, title])
 
-  const catalogNodes = (loading ? Array.from(new Array(10)) : catalogs).slice(0, 30).map((v, i) => (
+  const catalogNodes = (loading ? Array.from(new Array(10)) : catalogs).map((v, i) => (
     <Grid className={classes.grid} key={i} item md={3} sm={4} xs={6}>
       {v ? (
         <Catalog catalog={v} loading={loading} />
@@ -58,9 +81,18 @@ function Index() {
     </Grid>
   ))
   return (
-    <Grid container spacing={3}>
-      {catalogNodes}
-    </Grid>
+    <React.Fragment>
+      <Grid container spacing={3}>
+        {catalogNodes}
+      </Grid>
+      <Box mt={4} px={1}>
+        {count > PER_PAGE && (
+          <Button disabled={moreLoading} onClick={loadMore} className={classes.loadMore} variant="outlined" fullWidth>
+            {moreLoading ? '載入中' : '載入更多內容'}
+          </Button>
+        )}
+      </Box>
+    </React.Fragment>
   );
 }
 
