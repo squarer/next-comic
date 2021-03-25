@@ -8,8 +8,22 @@ import Link from '@material-ui/core/Link'
 import { useRouter } from 'next/router'
 import Button from '@material-ui/core/Button'
 import Alert from '@material-ui/lab/Alert'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles(theme => ({
+  page: {
+    marginBottom: 20,
+    padding: 16,
+    '@media (max-width: 500px)': {
+      padding: 0,
+      width: 'calc(100% + 32px)',
+      marginLeft: -16
+    }
+  },
+}))
 
 function Chapter() {
+  const classes = useStyles()
   const router = useRouter()
   const { id, chapterId } = router.query
   const [catalog, setCatalog] = useState({})
@@ -64,7 +78,7 @@ function Chapter() {
   }
 
   const pageNodes = pages.map((v, i) => (
-    <Page image={v} key={i} style={{ marginBottom: 20, padding: 16 }} />
+    <Page image={v} key={i} className={classes.page} />
   ))
 
   return (

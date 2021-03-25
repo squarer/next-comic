@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     width: 400,
-    '@media (max-width: 500px)': {
+    '@media (max-width: 400px)': {
       width: 300,
       marginLeft: 'auto',
       marginRight: 'auto'
